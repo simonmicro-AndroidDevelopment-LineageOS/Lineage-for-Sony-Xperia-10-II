@@ -29,6 +29,12 @@ There you have multiple options:
     * AndroidFileHost (upload pending - sry)
 * To get ONLY the OTA package to update your system later on, visit (or open up the LineageOS Updater) [ota.simonmicro.de](https://ota.simonmicro.de/builds/full/) - please note that only the last recent 14 days are accessible there.
 
+## Changelog
+```
+2020-11-17
+Initial release.
+```
+
 ## How to install your system
 The following guide assumes, you have setup `adb` and `fastboot` already - for that take a look into the internet. Also you should already downloaded the **complete** package from above!
 
