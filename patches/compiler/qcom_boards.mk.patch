@@ -1,0 +1,11 @@
+--- /stuff/vendor/lineage/build/core/vendor/qcom_boards.mk	2020-11-14 22:46:38.602129624 +0100
++++ /stuff/qcom_boards.mk	2020-11-14 22:50:19.685670353 +0100
+@@ -6,7 +6,7 @@
+ LITO := lito #SM7250
+ MSMNILE := msmnile #SM8150
+ MSMSTEPPE := sm6150
+-TRINKET := trinket #SM6125
++TRINKET := sm6125
+ ATOLL := atoll #SM6250
+ 
+ # A Family

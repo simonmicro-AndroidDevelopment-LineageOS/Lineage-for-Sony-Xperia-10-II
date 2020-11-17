@@ -1,0 +1,142 @@
+stages:
+    - prepare
+    - init
+    - sync
+    - build
+    - sign
+    - verify
+    - deploy
+
+image: $CI_REGISTRY_IMAGE:latest
+
+build docker:
+    stage: prepare
+    image:
+        name: gcr.io/kaniko-project/executor:debug
+        entrypoint: [""]
+    script:
+        - mkdir -p /kaniko/.docker
+        - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+        - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE
+#    only:
+#        - push
+        
+repo init:
+    stage: init
+    script:
+        - mkdir -p $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
+        - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
+        - repo init -u git://github.com/LineageOS/android.git -b lineage-17.1
+        - cd .repo
+        - rm -rf local_manifests
+        - git clone https://github.com/MartinX3-AndroidDevelopment-LineageOS/local_manifests.git
+        - cd local_manifests
+        - git checkout MartinX3/lineage-17.1
+        - cd ../..
+#    only:
+#        - push
+        
+repo sync:
+    stage: sync
+    script:
+        - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
+        - repo sync -j$(nproc)
+        - ./repo_update.sh
+#    only:
+#        - push
+
+brunch:
+    stage: build
+    before_script:
+        - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
+        - echo "Applying patches..."
+        # Fix compile errors
+        - patch -r - -p0 --forward vendor/lineage/config/BoardConfigQcom.mk < $CI_PROJECT_DIR/patches/compiler/BoardConfigQcom.mk.patch || true
+        - patch -r - -p0 --forward vendor/lineage/build/core/vendor/qcom_boards.mk < $CI_PROJECT_DIR/patches/compiler/qcom_boards.mk.patch || true
+        # Disable verity support, as it sometimes break devices -> https://github.com/MarijnS95/device-sony-seine/commit/dd9415369264c33fb498cf4c04887f5a88ee2b4d
+        - patch -r - -p0 --forward device/sony/seine/PlatformConfig.mk < $CI_PROJECT_DIR/patches/verity/PlatformConfig.mk.patch || true
+        # Overwrite the OTA url
+        - cat $CI_PROJECT_DIR/patches/ota/system.prop > device/sony/pdx201/system.prop
+        - patch -r - -p0 --forward device/sony/pdx201/lineage_pdx201_DSDS.mk < $CI_PROJECT_DIR/patches/ota/lineage_pdx201_DSDS.mk.patch || true
+        # Extend system partition over-provisioning
+        - patch -r - -p0 --forward device/sony/pdx201/BoardConfig.mk < $CI_PROJECT_DIR/patches/size/BoardConfig.mk.patch || true
+        # Change the build name from AOSP to Lineage
+        - patch -r - -p0 --forward device/sony/pdx201/aosp_xqau51.mk < $CI_PROJECT_DIR/patches/name/aosp_xqau51.mk.patch || true
+        - patch -r - -p0 --forward device/sony/pdx201/aosp_xqau52.mk < $CI_PROJECT_DIR/patches/name/aosp_xqau52.mk.patch || true
+        # Add more volume steps
+        - cat $CI_PROJECT_DIR/patches/volume/system.prop >> device/sony/pdx201/system.prop
+        # Cleanup
+        - echo "Cleaning old results..."
+        - rm -fv out/target/product/pdx201/*.zip out/target/product/pdx201/*.md5sum
+    script:
+        - echo "Building..."
+        - source build/envsetup.sh
+        - breakfast lineage_pdx201_DSDS-userdebug
+        - mka target-files-package
+
+sign:
+    stage: sign
+    before_script:
+        - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
+        # Download and extract the private keys (should create a dir called PRIVATE_KEYS)
+        - echo $BUILD_PRIVATE_KEYS | base64 -d > temp.zip
+        - unzip -o temp.zip
+        - rm -fv temp.zip
+    script:
+        - echo "Building tools..."
+        - source build/envsetup.sh
+        - breakfast lineage_pdx201_DSDS-userdebug
+        - mka otatools
+        - echo "Signing apks..."
+        - ./build/tools/releasetools/sign_target_files_apks -o -d ./PRIVATE_KEYS out/target/product/pdx201/obj/PACKAGING/target_files_intermediates/*-target_files-*.zip out/target/product/pdx201/signed-target_files.zip
+        - echo "Generating signed install image and ota..."
+        - export RESULT_NAME=lineage-17.1-$(date '+%Y%m%d')-UNOFFICIAL-pdx201_DSDS-signed
+        - ./build/tools/releasetools/ota_from_target_files -k ./PRIVATE_KEYS/releasekey --block --backup=true out/target/product/pdx201/signed-target_files.zip out/target/product/pdx201/$RESULT_NAME-ota_update.zip
+        - ./build/tools/releasetools/img_from_target_files out/target/product/pdx201/signed-target_files.zip out/target/product/pdx201/$RESULT_NAME.zip
+        - md5sum out/target/product/pdx201/$RESULT_NAME-ota_update.zip > out/target/product/pdx201/$RESULT_NAME-ota_update.zip.md5sum
+        - md5sum out/target/product/pdx201/$RESULT_NAME.zip > out/target/product/pdx201/$RESULT_NAME.zip.md5sum
+
+verity check:
+    stage: verify
+    before_script:
+        - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
+    script:
+        - echo "Building tools..."
+        - source build/envsetup.sh
+        - lunch lineage_pdx201_DSDS-userdebug
+        - m avbtool
+        - echo "Verify packages..."
+        - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH/out/target/product/pdx201/
+        - $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH/build/tools/releasetools/check_target_files_signatures -l ./PRIVATE_KEYS/ signed-target_files.zip
+        # Verify image integrity (kind of useless after disabling image verity before)
+        - echo "Verify images..."
+        - $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH/out/host/linux-x86/bin/avbtool verify_image --image vbmeta.img --follow_chain_partitions
+    after_script:
+        # And submit them
+        - mkdir -p $CI_PROJECT_DIR/img
+        - mkdir -p $CI_PROJECT_DIR/ota
+#        - echo "See https://github.com/julianxhokaxhiu/LineageOTA/issues/64#issuecomment-706393961" > $CI_PROJECT_DIR/delta/THIS_MUST_BE_RENAMED
+        - cp -rv $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH/out/target/product/pdx201/*-signed-ota_update.zip* $CI_PROJECT_DIR/ota
+        - cp -rv $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH/out/target/product/pdx201/*-signed.zip* $CI_PROJECT_DIR/img
+        - cp -rv $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH/out/target/product/pdx201/system/build.prop $CI_PROJECT_DIR
+    artifacts:
+        paths:
+            - ./img
+            - ./ota
+            - ./build.prop
+            
+rsync:
+    stage: deploy
+    image: realsimonmicro/alpine-deploy
+    before_script:
+        - eval $(ssh-agent -s)
+        - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+        - mkdir -p ~/.ssh
+        - chmod 700 ~/.ssh
+    script:
+        - mv -v build.prop $(ls -1 ./ota/*.zip).prop
+        - rsync -e "ssh -o StrictHostKeyChecking=no" -rtvzx ./ota/ $DEPLOY_HOST:$DEPLOY_DIR
+        - ssh -o StrictHostKeyChecking=no $DEPLOY_HOST chmod 777 -Rv $DEPLOY_DIR
+        - ssh -o StrictHostKeyChecking=no $DEPLOY_HOST "find $DEPLOY_DIR -mtime +14 -exec rm {} \;"
+    only:
+        - master

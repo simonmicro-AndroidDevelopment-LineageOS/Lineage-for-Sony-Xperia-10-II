@@ -1,0 +1,10 @@
+--- /run/user/1000/gvfs/sftp:host=simon-server.local/mnt/dying_ancients/android/ci/device/sony/pdx201/aosp_xqau52.mk	2020-11-14 23:55:43.000000000 +0100
++++ /home/simon/Desktop/aosp_xqau52.mk	2020-11-15 22:15:57.559993774 +0100
+@@ -23,6 +23,6 @@
+ 
+ PRODUCT_NAME := aosp_xqau52
+ PRODUCT_DEVICE := pdx201
+-PRODUCT_MODEL := Xperia 10 II (AOSP)
++PRODUCT_MODEL := Xperia 10 II
+ PRODUCT_BRAND := Sony
+ PRODUCT_MANUFACTURER := Sony
