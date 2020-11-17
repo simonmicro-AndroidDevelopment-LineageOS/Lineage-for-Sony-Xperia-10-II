@@ -92,6 +92,9 @@ As much I would like, I can't do everything by myself. A huge thank you to...
 
 `PERSISTENT_DATA_STORAGE` -> path to a huge persistent drive (200GB at least)
 `BUILD_PRIVATE_KEYS` -> base64 encoded zip archive of the private keys for signing this build (represents `~/android-certs` from [here](https://wiki.lineageos.org/signing_builds.html))
+`DEPLOY_DIR` -> remote path for the [OTA api](https://github.com/julianxhokaxhiu/LineageOTA)
+`DEPLOY_HOST` -> remote SSH host for the api
+`SSH_PRIVATE_KEY` -> remote SSH key for the api
 
 To generate `BUILD_PRIVATE_KEYS` execute (skip any password request)...
 ```bash
