@@ -1,4 +1,4 @@
-# Lineage 17.1 for the Sony Xperia 10 II
+# LineageOS 17.1 for the Sony Xperia 10 II
 _Please note this is currently for the dual-sim model ONLY. When you need a single-sim variant leave a comment, so we can work an that..._
 
 ```
@@ -77,7 +77,7 @@ the data to the currently inactive slot and _then_ fails. You could simply switc
 Install the Magisk zip like the OTA system update by using `adb sideload [MAGISK_FILE_NAME]`.
 
 ## Want to install OpenGApps?
-DON'T. Currently this causes a bootloop, as the installer removes the `PackageInstaller` of Android and never installs a new one. I'm currently investgating this - until then: Stay tuned for (OTA-)Updates!
+DON'T. Currently this causes a bootloop, as the installer removes the `PackageInstaller` of Android and never installs a new one. I'm currently investigating this - until then: Stay tuned for (OTA-)Updates!
 
 ## Credits
 As much I would like, I can't do everything by myself. A huge thank you to...
