@@ -18,8 +18,8 @@ build docker:
         - mkdir -p /kaniko/.docker
         - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
         - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE
-#    only:
-#        - push
+    only:
+        - push
         
 repo init:
     stage: init
@@ -33,8 +33,8 @@ repo init:
         - cd local_manifests
         - git checkout MartinX3/lineage-17.1
         - cd ../..
-#    only:
-#        - push
+    only:
+        - push
         
 repo sync:
     stage: sync
@@ -42,8 +42,6 @@ repo sync:
         - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
         - repo sync -j$(nproc)
         - ./repo_update.sh
-#    only:
-#        - push
 
 brunch:
     stage: build
