@@ -16,7 +16,7 @@ _Please note this is currently for the dual-sim model ONLY. When you need a sing
 * OTA updates
 * Increased volume steps to 25
 * Over-provisioned system image (300MiB), to allow install of OpenGApps and other stuff
-* Open Source (it is based on SODP, you can view all my patches and ci scripts [here](https://gitlab.simonmicro.de/android/lineage/lineage-pdx201))
+* Open Source (it is based on SODP, you can view all my patches and ci scripts [here](https://gitlab.simonmicro.de/android/lineage/lineage-pdx201) or [here](https://github.com/Simonmicro/Lineage-for-Sony-Xperia-10-II))
 
 ## What does not work?
 * Using wide and zoom back-facing cameras - is currently WIP ([see here](https://github.com/sonyxperiadev/device-sony-pdx201/pull/15))
@@ -25,9 +25,15 @@ _Please note this is currently for the dual-sim model ONLY. When you need a sing
 ## Download
 There you have multiple options:
 * To get the **complete** package (both including the `ota` and `img` parts; only needed for the initial setup) visit...
+    * [AndroidFileHost](https://www.androidfilehost.com/?w=files&flid=319998)
     * [GitLab](https://gitlab.simonmicro.de/android/lineage/lineage-pdx201/-/pipelines)
-    * AndroidFileHost (upload pending - sry)
 * To get ONLY the OTA package to update your system later on, visit (or open up the LineageOS Updater) [ota.simonmicro.de](https://ota.simonmicro.de/builds/full/) - please note that only the last recent 14 days are accessible there.
+
+## Changelog
+```
+2020-11-17
+Initial release.
+```
 
 ## How to install your system
 The following guide assumes, you have setup `adb` and `fastboot` already - for that take a look into the internet. Also you should already downloaded the **complete** package from above!
@@ -82,7 +88,7 @@ DON'T. Currently this causes a bootloop, as the installer removes the `PackageIn
 ## Credits
 As much I would like, I can't do everything by myself. A huge thank you to...
 * @MartinX3 for the used [local_manifests](https://github.com/MartinX3-AndroidDevelopment-LineageOS/local_manifests) and his [device tree](https://github.com/MartinX3-AndroidDevelopment-LineageOS/android_device_sony_pdx201) from his [LineageOS organization](https://github.com/MartinX3-AndroidDevelopment-LineageOS)
-* ...the team behind @sonyxperiadev, for their great work!
+* ...the team behind @sonyxperiadev, for their great work (and their [kernel sources](https://github.com/sonyxperiadev/kernel))!
 
 
 
