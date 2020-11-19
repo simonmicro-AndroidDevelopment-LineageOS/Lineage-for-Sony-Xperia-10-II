@@ -88,7 +88,7 @@ DON'T. Currently this causes a bootloop, as the installer removes the `PackageIn
 ## Credits
 As much I would like, I can't do everything by myself. A huge thank you to...
 * @MartinX3 for the used [local_manifests](https://github.com/MartinX3-AndroidDevelopment-LineageOS/local_manifests) and his [device tree](https://github.com/MartinX3-AndroidDevelopment-LineageOS/android_device_sony_pdx201) from his [LineageOS organization](https://github.com/MartinX3-AndroidDevelopment-LineageOS)
-* ...the team behind @sonyxperiadev, for their great work!
+* ...the team behind @sonyxperiadev, for their great work (and their [kernel sources](https://github.com/sonyxperiadev/kernel))!
 
 
 
