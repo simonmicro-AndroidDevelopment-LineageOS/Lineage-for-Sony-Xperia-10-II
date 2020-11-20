@@ -65,7 +65,8 @@ yours. When you plan to flash the images manually, make sure to include `boot`, 
 ```bash
 adb sideload [OTA_SYSTEM_UPDATE_ZIP_FILENAME]
 ```
-11. You may now relock your bootloader to suppress the bold warning during starting your device. For that take a look at @Sjll guide [here](https://forum.xda-developers.com/sony-xperia-10-ii/how-to/guidance-relock-bootloader-xperia-10-ii-t4190095)
+11. After installing the OTA, make sure to reboot your device to verify the update is indeed working. Also the update switches the slots, but the recovery needs to reboot to realize that - otherwise sideloading other stuff may won't work!
+12. You may now relock your bootloader to suppress the bold warning during starting your device. For that take a look at @Sjll guide [here](https://forum.xda-developers.com/sony-xperia-10-ii/how-to/guidance-relock-bootloader-xperia-10-ii-t4190095)
 
 ### Something went wrong - help!
 
@@ -83,7 +84,7 @@ the data to the currently inactive slot and _then_ fails. You could simply switc
 Install the Magisk zip like the OTA system update by using `adb sideload [MAGISK_FILE_NAME]`.
 
 ## Want to install OpenGApps?
-DON'T. Currently this causes a bootloop, as the installer removes the `PackageInstaller` of Android and never installs a new one. I'm currently investigating this - until then: Stay tuned for (OTA-)Updates!
+Make sure to use the `pico`-variant, as the system partition is even with overprovisioning really small (as the installer extracs some more stuff on the first boot) - then install the OpenGApps zip like the OTA system update by using `adb sideload [MAGISK_FILE_NAME]`.
 
 ## Credits
 As much I would like, I can't do everything by myself. A huge thank you to...
