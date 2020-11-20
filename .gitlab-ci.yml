@@ -18,8 +18,7 @@ build docker:
         - mkdir -p /kaniko/.docker
         - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
         - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE
-    only:
-        - push
+    when: manual
         
 repo init:
     stage: init
@@ -40,7 +39,11 @@ repo sync:
     stage: sync
     script:
         - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
+        # Fetch + safe apply new data
         - repo sync -j$(nproc)
+        # Revert any custom patches
+        - repo forall -vc 'git reset --hard; git clean -fdx' 
+        # Apply the custom fixes
         - ./repo_update.sh
 
 brunch:
@@ -138,3 +141,6 @@ rsync:
         - ssh -o StrictHostKeyChecking=no $DEPLOY_HOST "find $DEPLOY_DIR -mtime +14 -exec rm {} \;"
     only:
         - master
+    # Just in case the build is broken - delay the rollout, so I could cancel it
+    when: delayed
+    start_in: 5 days
