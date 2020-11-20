@@ -26,11 +26,14 @@ _Please note this is currently for the dual-sim model ONLY. When you need a sing
 There you have multiple options:
 * To get the **complete** package (both including the `ota` and `img` parts; only needed for the initial setup) visit...
     * [AndroidFileHost](https://www.androidfilehost.com/?w=files&flid=319998)
-    * [GitLab](https://gitlab.simonmicro.de/android/lineage/lineage-pdx201/-/pipelines)
+    * [GitLab](https://gitlab.simonmicro.de/android/lineage/lineage-pdx201/-/pipelines) (make sure to download the artifacts from the `master` branch)
 * To get ONLY the OTA package to update your system later on, visit (or open up the LineageOS Updater) [ota.simonmicro.de](https://ota.simonmicro.de/builds/full/) - please note that only the last recent 14 days are accessible there.
 
 ## Changelog
 ```
+2020-11-20
+Added OpenGApps support.
+
 2020-11-17
 Initial release.
 ```
