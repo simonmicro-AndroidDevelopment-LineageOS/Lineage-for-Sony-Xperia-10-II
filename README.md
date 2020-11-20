@@ -15,7 +15,7 @@ _Please note this is currently for the dual-sim model ONLY. When you need a sing
 ## Features
 * OTA updates
 * Increased volume steps to 25
-* Over-provisioned system image (300MiB), to allow install of OpenGApps and other stuff
+* Over-provisioned system image (470MiB), to allow install of OpenGApps and other stuff
 * Open Source (it is based on SODP, you can view all my patches and ci scripts [here](https://gitlab.simonmicro.de/android/lineage/lineage-pdx201) or [here](https://github.com/Simonmicro/Lineage-for-Sony-Xperia-10-II))
 
 ## What does not work?
@@ -74,6 +74,7 @@ adb sideload [OTA_SYSTEM_UPDATE_ZIP_FILENAME]
 * Don't panic!
 * You messed up the verity disable step from before - try again.
 * Try to switch the current boot slot (get current `fastboot getvar current-slot` and set new `fastboot --set-active=`, you can choose between `a` and `b`) and retry disableing verity disable again!
+* When your device fails to boot too many times (and crashes) the current slot could also get marked as corrupt. To reset that counter you'll need to reflash the `boot` partition - to see what is going on, try `fastboot getvar all` and look out for something like a `unbootable` flag.
 
 #### (Step 10) When you get the `kDownloadPayloadPubKeyVerificationError` error
 Well, that's caused by using an other recovery than the provided one, as I use my own private keys to sign the build the recovery must also know them. Using an other recovery than the one from
@@ -84,7 +85,7 @@ the data to the currently inactive slot and _then_ fails. You could simply switc
 Install the Magisk zip like the OTA system update by using `adb sideload [MAGISK_FILE_NAME]`.
 
 ## Want to install OpenGApps?
-Make sure to use the `pico`-variant, as the system partition is even with overprovisioning really small (as the installer extracs some more stuff on the first boot) - then install the OpenGApps zip like the OTA system update by using `adb sideload [MAGISK_FILE_NAME]`.
+Make sure to use the `pico`-variant, as the system partition is even with over-provisioning really small (as the installer extracts some more stuff on the first boot) - then install the OpenGApps zip like the OTA system update by using `adb sideload [OPENGAPPS_FILE_NAME]`.
 
 ## Credits
 As much I would like, I can't do everything by myself. A huge thank you to...
