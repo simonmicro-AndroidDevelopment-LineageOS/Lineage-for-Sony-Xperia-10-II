@@ -7,7 +7,7 @@ stages:
     - verify
     - deploy
 
-image: $CI_REGISTRY_IMAGE:latest
+image: $CI_REGISTRY_IMAGE:$CI_COMMIT_BRANCH
 
 build docker:
     stage: prepare
@@ -17,9 +17,8 @@ build docker:
     script:
         - mkdir -p /kaniko/.docker
         - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
-        - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE
-    only:
-        - push
+        - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_BRANCH
+    when: manual
         
 repo init:
     stage: init
@@ -40,7 +39,11 @@ repo sync:
     stage: sync
     script:
         - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
+        # Fetch + safe apply new data
         - repo sync -j$(nproc)
+        # Revert any custom patches
+        - repo forall -vc 'git reset --hard; git clean -fdx' 
+        # Apply the custom fixes
         - ./repo_update.sh
 
 brunch:
@@ -49,18 +52,18 @@ brunch:
         - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
         - echo "Applying patches..."
         # Fix compile errors
-        - patch -r - -p0 --forward vendor/lineage/config/BoardConfigQcom.mk < $CI_PROJECT_DIR/patches/compiler/BoardConfigQcom.mk.patch || true
-        - patch -r - -p0 --forward vendor/lineage/build/core/vendor/qcom_boards.mk < $CI_PROJECT_DIR/patches/compiler/qcom_boards.mk.patch || true
+        - patch vendor/lineage/config/BoardConfigQcom.mk < $CI_PROJECT_DIR/patches/compiler/BoardConfigQcom.mk.patch
+        - patch vendor/lineage/build/core/vendor/qcom_boards.mk < $CI_PROJECT_DIR/patches/compiler/qcom_boards.mk.patch
         # Disable verity support, as it sometimes break devices -> https://github.com/MarijnS95/device-sony-seine/commit/dd9415369264c33fb498cf4c04887f5a88ee2b4d
-        - patch -r - -p0 --forward device/sony/seine/PlatformConfig.mk < $CI_PROJECT_DIR/patches/verity/PlatformConfig.mk.patch || true
+        - patch device/sony/seine/PlatformConfig.mk < $CI_PROJECT_DIR/patches/verity/PlatformConfig.mk.patch
         # Overwrite the OTA url
         - cat $CI_PROJECT_DIR/patches/ota/system.prop > device/sony/pdx201/system.prop
-        - patch -r - -p0 --forward device/sony/pdx201/lineage_pdx201_DSDS.mk < $CI_PROJECT_DIR/patches/ota/lineage_pdx201_DSDS.mk.patch || true
+        - patch device/sony/pdx201/lineage_pdx201_DSDS.mk < $CI_PROJECT_DIR/patches/ota/lineage_pdx201_DSDS.mk.patch
         # Extend system partition over-provisioning
-        - patch -r - -p0 --forward device/sony/pdx201/BoardConfig.mk < $CI_PROJECT_DIR/patches/size/BoardConfig.mk.patch || true
+        - patch device/sony/pdx201/BoardConfig.mk < $CI_PROJECT_DIR/patches/size/BoardConfig.mk.patch
         # Change the build name from AOSP to Lineage
-        - patch -r - -p0 --forward device/sony/pdx201/aosp_xqau51.mk < $CI_PROJECT_DIR/patches/name/aosp_xqau51.mk.patch || true
-        - patch -r - -p0 --forward device/sony/pdx201/aosp_xqau52.mk < $CI_PROJECT_DIR/patches/name/aosp_xqau52.mk.patch || true
+        - patch device/sony/pdx201/aosp_xqau51.mk < $CI_PROJECT_DIR/patches/name/aosp_xqau51.mk.patch
+        - patch device/sony/pdx201/aosp_xqau52.mk < $CI_PROJECT_DIR/patches/name/aosp_xqau52.mk.patch
         # Add more volume steps
         - cat $CI_PROJECT_DIR/patches/volume/system.prop >> device/sony/pdx201/system.prop
         # Cleanup
@@ -138,3 +141,6 @@ rsync:
         - ssh -o StrictHostKeyChecking=no $DEPLOY_HOST "find $DEPLOY_DIR -mtime +14 -exec rm {} \;"
     only:
         - master
+    # Just in case the build is broken - delay the rollout, so I could cancel it
+    when: delayed
+    start_in: 5 days
