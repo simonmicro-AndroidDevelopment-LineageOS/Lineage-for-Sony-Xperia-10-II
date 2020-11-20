@@ -39,7 +39,7 @@ Initial release.
 ```
 
 ## How to install your system
-The following guide assumes, you have setup `adb` and `fastboot` already - for that take a look into the internet. Also you should already downloaded the **complete** package from above!
+The following guide assumes, you have setup `adb` and `fastboot` already (make sure to always use the latest version of the toolkit, otherwise you'll may get problems during flashing) - for that take a look into the internet. Also you should already downloaded the **complete** package from above!
 
 1. Unlock the bootloader - a "how to" is [here](https://developer.sony.com/develop/open-devices/get-started/unlock-bootloader/)...
 2. Download the oem binaries from [here](https://developer.sony.com/file/download/software-binaries-for-aosp-android-10-0-kernel-4-14-seine/), make sure to use _exactly_ that version!
