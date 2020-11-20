@@ -1,0 +1,9 @@
+#============= priv_app ==============
+allow priv_app device:dir open;
+allow priv_app hal_memtrack_default:binder call;
+allow priv_app proc_interrupts:file open;
+allow priv_app proc_modules:file open;
+allow priv_app sysfs:dir open;
+allow priv_app sysfs_loop:file read;
+allow priv_app sysfs_msm_subsys:file { getattr open read };
+allow priv_app vendor_firmware_file:filesystem getattr;
