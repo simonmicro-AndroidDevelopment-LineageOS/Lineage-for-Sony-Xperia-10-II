@@ -66,7 +66,7 @@ brunch:
         - patch device/sony/pdx201/aosp_xqau52.mk < $CI_PROJECT_DIR/patches/name/aosp_xqau52.mk.patch
         # Add more volume steps
         - cat $CI_PROJECT_DIR/patches/volume/system.prop >> device/sony/pdx201/system.prop
-        # Enforce SELinux
+        # Enforce SELinux and install needed policies
         - patch device/sony/pdx201/BoardConfig.mk < $CI_PROJECT_DIR/patches/selinux/BoardConfig.mk.patch
         - mkdir -p device/sony/pdx201/selinux
         - cp -rv $CI_PROJECT_DIR/patches/selinux/policies/* device/sony/pdx201/selinux
