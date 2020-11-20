@@ -63,7 +63,7 @@ fastboot flash --disable-verity --disable-verification vbmeta_system vbmeta_syst
 8. You should now be booted into the recovery. We now clean any old data from Sonys Stock ROM - this is just to make sure you have a _really_ clean install: Choose the "Factory reset" option.
 9. The phone is now clean and ready to accept the new system. You now can either install just the OTA package and be done or flash every `.img` from the full package manually - the coice is
 yours. When you plan to flash the images manually, make sure to include `boot`, `system`, `product`, `vendor`, `vbmeta_system`, as these are normally part of the OTA update (I extracted the
-`payload.bin` to verify this!). I'll choose the simpler OTA-sideload approach for now.
+`payload.bin` to verify this!). For the latter approach you may orient yourself on my [flashall.sh](https://pastebin.com/36FZzwUP). I'll choose the simpler OTA-sideload approach for now.
 10. Select "Apply update -> Apply from ADB" (now make sure the adb server runs as `root` - may use `adb kill-server && sudo adb start-server` to fix that) and execute (the OTA zip is inside the `ota` subdir):
 ```bash
 adb sideload [OTA_SYSTEM_UPDATE_ZIP_FILENAME]
