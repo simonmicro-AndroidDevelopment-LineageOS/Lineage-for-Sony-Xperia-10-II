@@ -9,7 +9,7 @@
 -BOARD_SYSTEMIMAGE_PARTITION_RESERVED_SIZE := 52428800
 -BOARD_VENDORIMAGE_PARTITION_RESERVED_SIZE := 52428800
 -BOARD_PRODUCTIMAGE_PARTITION_RESERVED_SIZE := 52428800
-+# Overprovision dynamic partitions with 300MiB to
++# Overprovision dynamic partitions with 470MiB to
 +# allow on-device file editing and OpenGApps, vendor
 +# and product remain on 50MiB overprovision
 +BOARD_SYSTEMIMAGE_PARTITION_RESERVED_SIZE := 471859200
