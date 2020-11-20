@@ -1,3 +1,0 @@
-#============= platform_app ==============
-allow platform_app sysfs_msm_subsys:dir search;
-allow platform_app sysfs_msm_subsys:file { getattr open read };

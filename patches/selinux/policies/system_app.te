@@ -1,2 +1,0 @@
-#============= system_app ==============
-allow system_app sysfs_msm_subsys:dir search;

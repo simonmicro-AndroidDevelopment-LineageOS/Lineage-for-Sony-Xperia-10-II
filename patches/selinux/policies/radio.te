@@ -1,5 +1,0 @@
-#============= radio ==============
-allow radio ims:binder call;
-allow radio vendor_radio_prop:file { getattr map open read };
-allow radio vendor_file:file { execute getattr map open read };
-allow radio vendor_radio_prop:file { getattr map open read };
