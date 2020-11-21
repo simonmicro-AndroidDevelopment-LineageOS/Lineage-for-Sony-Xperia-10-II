@@ -6,7 +6,7 @@ allow bootanim sysfs_msm_subsys:file { getattr open read };
 allow crash_dump hwservicemanager_prop:file { getattr map open };
 
 #============= dpmd ==============
-allow dpmd self:capability { dac_override setuid };
+#allow dpmd self:capability { dac_override setuid };
 
 #============= hal_imsrtp ==============
 allow hal_imsrtp socket_device:sock_file write;
@@ -34,9 +34,9 @@ allow priv_app sysfs_msm_subsys:file { getattr open read };
 allow priv_app vendor_firmware_file:filesystem getattr;
 
 #============= radio ==============
-allow radio default_android_service:service_manager add;
+#allow radio default_android_service:service_manager add;
 allow radio ims:binder { call transfer };
-allow radio vendor_file:file { execute getattr map open read };
+#allow radio vendor_file:file { execute getattr map open read };
 allow radio vendor_radio_prop:file { getattr map open read };
 allow radio vnd_qti_uce_hwservice:hwservice_manager find;
 
@@ -50,10 +50,10 @@ allow system_app sysfs_msm_subsys:dir search;
 #============= system_server ==============
 allow system_server sysfs_msm_subsys:file { getattr open read };
 allow system_server vendor_security_patch_level_prop:file { getattr map open read };
-allow system_server sysfs:file { getattr open read };
+#allow system_server sysfs:file { getattr open read };
 
-#============= timekeep_app ==============
-#allow timekeep_app cgroup:file { open write };
+####============= timekeep_app ==============
+###allow timekeep_app cgroup:file { open write };
 
 #============= ueventd ==============
-allow ueventd self:capability sys_nice
+allow ueventd self:capability sys_nice;
