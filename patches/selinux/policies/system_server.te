@@ -1,0 +1,2 @@
+#============= system_server ==============
+allow system_server sysfs_msm_subsys:file { getattr open read };

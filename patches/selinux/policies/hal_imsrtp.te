@@ -1,0 +1,2 @@
+#============= hal_imsrtp ==============
+allow hal_imsrtp socket_device:sock_file write;
