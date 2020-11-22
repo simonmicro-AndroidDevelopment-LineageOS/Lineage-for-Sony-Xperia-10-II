@@ -15,7 +15,7 @@ _Please note this is currently for the dual-sim model ONLY. When you need a sing
 ## Features
 * OTA updates
 * Increased volume steps to 25
-* Over-provisioned system image (470MiB), to allow install of OpenGApps and other stuff
+* Over-provisioned system image (580MiB), to allow install of OpenGApps and other stuff
 * Open Source (it is based on SODP, you can view all my patches and ci scripts [here](https://gitlab.simonmicro.de/android/lineage/lineage-pdx201) or [here](https://github.com/Simonmicro/Lineage-for-Sony-Xperia-10-II))
 
 ## What does not work?
@@ -88,7 +88,7 @@ the data to the currently inactive slot and _then_ fails. You could simply switc
 Install the Magisk zip like the OTA system update by using `adb sideload [MAGISK_FILE_NAME]`.
 
 ## Want to install OpenGApps?
-Make sure to use the `pico`-variant, as the system partition is even with over-provisioning really small (as the installer extracts some more stuff on the first boot) - then install the OpenGApps zip like the OTA system update by using `adb sideload [OPENGAPPS_FILE_NAME]`.
+Make sure to use the `nano`-variant (or the even smaller `pico`), as the system partition is even with over-provisioning really small (as the installer extracts some more stuff on the first boot) - then install the OpenGApps zip like the OTA system update by using `adb sideload [OPENGAPPS_FILE_NAME]`.
 
 ## Credits
 As much I would like, I can't do everything by myself. A huge thank you to...
