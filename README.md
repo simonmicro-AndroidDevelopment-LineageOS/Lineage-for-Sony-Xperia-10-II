@@ -13,7 +13,7 @@ _Please note this is currently for the dual-sim model ONLY. When you need a sing
 ```
 
 ## Features
-* OTA updates
+* OTA updates, always delayed for 5 days (to prevent broken rollouts); when you want it immediately, checkout my GitLab pipelines
 * Increased volume steps to 25
 * Over-provisioned system image (580MiB), to allow install of OpenGApps and other stuff
 * Open Source (it is based on SODP, you can view all my patches and ci scripts [here](https://gitlab.simonmicro.de/android/lineage/lineage-pdx201) or [here](https://github.com/Simonmicro/Lineage-for-Sony-Xperia-10-II))
