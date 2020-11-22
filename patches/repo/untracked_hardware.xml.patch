@@ -1,11 +1,16 @@
 --- /run/user/1000/gvfs/sftp:host=simon-server.local/mnt/dying_ancients/android/lineage_17.1_MartinX3/.repo/local_manifests/untracked_hardware.xml	2020-11-02 22:40:02.000000000 +0100
-+++ /home/simon/Desktop/untracked_hardware.xml	2020-11-22 22:59:20.472679622 +0100
-@@ -18,7 +18,7 @@
++++ /home/simon/Desktop/untracked_hardware.xml	2020-11-22 23:03:23.492913887 +0100
+@@ -18,10 +18,10 @@
      <remove-project name="platform/hardware/qcom/sdm845/media" />
      <remove-project name="platform/hardware/qcom/sdm845/thermal" />
      <remove-project name="platform/hardware/qcom/sdm845/vr" />
 -    <remove-project name="platform/hardware/qcom/sm8150/data/ipacfg-mgr" />
+-    <remove-project name="platform/hardware/qcom/sm8150/display" />
 +    <!--<remove-project name="platform/hardware/qcom/sdm845/data/ipacfg-mgr" />--><!--Project has been removed-->
-     <remove-project name="platform/hardware/qcom/sm8150/display" />
++    <!--<remove-project name="platform/hardware/qcom/sm8150/display" />--><!--Project has been removed-->
      <remove-project name="platform/hardware/qcom/sm8150/gps" />
-     <remove-project name="platform/hardware/qcom/sm8150/media" />
+-    <remove-project name="platform/hardware/qcom/sm8150/media" />
++    <!--<remove-project name="platform/hardware/qcom/sm8150/media" />--><!--Project has been removed-->
+     <remove-project name="platform/hardware/qcom/sm8150/thermal" />
+     <remove-project name="platform/hardware/qcom/sm8150/vr" />
+ </manifest>
