@@ -1,0 +1,11 @@
+--- /run/user/1000/gvfs/sftp:host=simon-server.local/mnt/dying_ancients/android/lineage_17.1_MartinX3/.repo/local_manifests/qcom.xml	2020-11-02 22:40:02.000000000 +0100
++++ /home/simon/Desktop/qcom.xml	2020-11-22 22:37:35.515815583 +0100
+@@ -4,7 +4,7 @@
+ <!-- First: Add/Replace repos and particular directories needed by LineageOS -->
+ <include name="local_manifests/lineageos/qcom_before.xml" />
+ 
+-<remove-project name="platform/hardware/qcom/sdm845/data/ipacfg-mgr" />
++<!--<remove-project name="platform/hardware/qcom/sdm845/data/ipacfg-mgr" />--><!--Project has been removed-->
+ 
+ <project path="vendor/qcom/opensource/gps" name="hardware-qcom-gps" groups="device" remote="sony" revision="aosp/LA.UM.8.1.r1" />
+ 
