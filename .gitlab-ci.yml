@@ -33,7 +33,6 @@ repo init:
         - cd local_manifests
         - git checkout MartinX3/lineage-17.1
         - cd ../..
-        - patch -r - -p0 --forward .repo/local_manifests/untracked_hardware.xml < $CI_PROJECT_DIR/patches/repo/untracked_hardware.xml.patch || true
         
 repo sync:
     stage: sync
