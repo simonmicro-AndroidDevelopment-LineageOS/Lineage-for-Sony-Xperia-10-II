@@ -6,7 +6,7 @@
  
 +BOARD_USE_ENFORCING_SELINUX := true
 +BOARD_SEPOLICY_DIRS += \
-+	device/sony/pdx201/sepolicy
++	device/sony/pdx201/selinux
 +
  include device/sony/seine/PlatformConfig.mk
  
