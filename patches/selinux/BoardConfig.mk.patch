@@ -1,0 +1,13 @@
+--- /run/user/1000/gvfs/sftp:host=simon-server.local/mnt/dying_ancients/android/lineage_17.1_MartinX3/device/sony/pdx201/BoardConfig.mk	2020-11-20 20:54:08.000000000 +0100
++++ /home/simon/BoardConfig.mk	2020-11-20 20:54:21.924263629 +0100
+@@ -12,6 +12,10 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ 
++BOARD_USE_ENFORCING_SELINUX := true
++BOARD_SEPOLICY_DIRS += \
++	device/sony/pdx201/selinux
++
+ include device/sony/seine/PlatformConfig.mk
+ 
+ TARGET_BOOTLOADER_BOARD_NAME := unknown

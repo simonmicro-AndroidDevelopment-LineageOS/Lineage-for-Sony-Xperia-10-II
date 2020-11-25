@@ -1,0 +1,3 @@
+#============= radio ==============
+allow radio vendor_radio_prop:file { getattr map open read };
+allow radio vnd_qti_uce_hwservice:hwservice_manager find;
