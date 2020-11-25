@@ -1,0 +1,3 @@
+#============= ims ==============
+allow ims socket_device:sock_file write;
+allow ims vendor_net_prop:file { getattr map open read };
