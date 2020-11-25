@@ -70,7 +70,6 @@ yours. When you plan to flash the images manually, make sure to include `boot`, 
 adb sideload [OTA_SYSTEM_UPDATE_ZIP_FILENAME]
 ```
 11. After installing the OTA, make sure to reboot your device to verify the update is indeed working. Also the update switches the slots, but the recovery needs to reboot to realize that - otherwise sideloading other stuff may won't work!
-12. You may now relock your bootloader to suppress the bold warning during starting your device. For that take a look at @Sjll guide [here](https://forum.xda-developers.com/sony-xperia-10-ii/how-to/guidance-relock-bootloader-xperia-10-ii-t4190095)
 
 ### Something went wrong - help!
 
