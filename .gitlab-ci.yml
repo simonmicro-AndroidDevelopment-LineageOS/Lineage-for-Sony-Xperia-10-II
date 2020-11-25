@@ -2,6 +2,7 @@ stages:
     - prepare
     - init
     - sync
+    - patch
     - build
     - sign
     - verify
@@ -32,25 +33,23 @@ repo init:
         - cd local_manifests
         - git checkout MartinX3/lineage-17.1
         - cd ../..
-    only:
-        - push
         
 repo sync:
     stage: sync
     script:
         - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
         # Fetch + safe apply new data
-        - repo sync -j$(nproc)
+        - repo sync -v -j$(nproc)
+        
+apply patches:
+    stage: patch
+    script:
+        - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
         # Revert any custom patches
         - repo forall -vc 'git reset --hard; git clean -fdx' 
         # Apply the custom fixes
         - ./repo_update.sh
-
-brunch:
-    stage: build
-    before_script:
-        - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
-        - echo "Applying patches..."
+        - echo "Applying own patches..."
         # Fix compile errors
         - patch vendor/lineage/config/BoardConfigQcom.mk < $CI_PROJECT_DIR/patches/compiler/BoardConfigQcom.mk.patch
         - patch vendor/lineage/build/core/vendor/qcom_boards.mk < $CI_PROJECT_DIR/patches/compiler/qcom_boards.mk.patch
@@ -66,6 +65,15 @@ brunch:
         - patch device/sony/pdx201/aosp_xqau52.mk < $CI_PROJECT_DIR/patches/name/aosp_xqau52.mk.patch
         # Add more volume steps
         - cat $CI_PROJECT_DIR/patches/volume/system.prop >> device/sony/pdx201/system.prop
+        # Enforce SELinux and install needed policies
+        - patch device/sony/pdx201/BoardConfig.mk < $CI_PROJECT_DIR/patches/selinux/BoardConfig.mk.patch
+        - mkdir -p device/sony/pdx201/selinux
+        - cp -rv $CI_PROJECT_DIR/patches/selinux/policies/* device/sony/pdx201/selinux
+
+brunch:
+    stage: build
+    before_script:
+        - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
         # Cleanup
         - echo "Cleaning old results..."
         - rm -fv out/target/product/pdx201/*.zip out/target/product/pdx201/*.md5sum

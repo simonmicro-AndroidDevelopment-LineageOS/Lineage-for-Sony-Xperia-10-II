@@ -15,11 +15,12 @@ _Please note this is currently for the dual-sim model ONLY. When you need a sing
 ## Features
 * OTA updates
 * Increased volume steps to 25
-* Over-provisioned system image (470MiB), to allow install of OpenGApps and other stuff
+* Over-provisioned system image (580MiB), to allow install of OpenGApps and other stuff
 * Open Source (it is based on SODP, you can view all my patches and ci scripts [here](https://gitlab.simonmicro.de/android/lineage/lineage-pdx201) or [here](https://github.com/Simonmicro/Lineage-for-Sony-Xperia-10-II))
 
 ## What does not work?
 * Using wide and zoom back-facing cameras - is currently WIP ([see here](https://github.com/sonyxperiadev/device-sony-pdx201/pull/15))
+* Notification LED
 * _You tell me..._
 
 ## Download
@@ -39,7 +40,7 @@ Initial release.
 ```
 
 ## How to install your system
-The following guide assumes, you have setup `adb` and `fastboot` already - for that take a look into the internet. Also you should already downloaded the **complete** package from above!
+The following guide assumes, you have setup `adb` and `fastboot` already (make sure to always use the latest version of the toolkit, otherwise you'll may get problems during flashing) - for that take a look into the internet. Also you should already downloaded the **complete** package from above!
 
 1. Unlock the bootloader - a "how to" is [here](https://developer.sony.com/develop/open-devices/get-started/unlock-bootloader/)...
 2. Download the oem binaries from [here](https://developer.sony.com/file/download/software-binaries-for-aosp-android-10-0-kernel-4-14-seine/), make sure to use _exactly_ that version!
@@ -63,7 +64,7 @@ fastboot flash --disable-verity --disable-verification vbmeta_system vbmeta_syst
 8. You should now be booted into the recovery. We now clean any old data from Sonys Stock ROM - this is just to make sure you have a _really_ clean install: Choose the "Factory reset" option.
 9. The phone is now clean and ready to accept the new system. You now can either install just the OTA package and be done or flash every `.img` from the full package manually - the coice is
 yours. When you plan to flash the images manually, make sure to include `boot`, `system`, `product`, `vendor`, `vbmeta_system`, as these are normally part of the OTA update (I extracted the
-`payload.bin` to verify this!). I'll choose the simpler OTA-sideload approach for now.
+`payload.bin` to verify this!). For the latter approach you may orient yourself on my [flashall.sh](https://pastebin.com/36FZzwUP). I'll choose the simpler OTA-sideload approach for now.
 10. Select "Apply update -> Apply from ADB" (now make sure the adb server runs as `root` - may use `adb kill-server && sudo adb start-server` to fix that) and execute (the OTA zip is inside the `ota` subdir):
 ```bash
 adb sideload [OTA_SYSTEM_UPDATE_ZIP_FILENAME]
@@ -88,7 +89,7 @@ the data to the currently inactive slot and _then_ fails. You could simply switc
 Install the Magisk zip like the OTA system update by using `adb sideload [MAGISK_FILE_NAME]`.
 
 ## Want to install OpenGApps?
-Make sure to use the `pico`-variant, as the system partition is even with over-provisioning really small (as the installer extracts some more stuff on the first boot) - then install the OpenGApps zip like the OTA system update by using `adb sideload [OPENGAPPS_FILE_NAME]`.
+Make sure to use the `nano`-variant (or the even smaller `pico`), as the system partition is even with over-provisioning really small (as the installer extracts some more stuff on the first boot) - then install the OpenGApps zip like the OTA system update by using `adb sideload [OPENGAPPS_FILE_NAME]`.
 
 ## Credits
 As much I would like, I can't do everything by myself. A huge thank you to...
