@@ -32,6 +32,9 @@ There you have multiple options:
 
 ## Changelog
 ```
+2020-11-25
+Added SELinux support.
+
 2020-11-20
 Added OpenGApps support.
 
