@@ -82,6 +82,9 @@ adb sideload [OTA_SYSTEM_UPDATE_ZIP_FILENAME]
 * Try to switch the current boot slot (get current `fastboot getvar current-slot` and set new `fastboot --set-active=`, you can choose between `a` and `b`) and retry disableing verity disable again!
 * When your device fails to boot too many times (and crashes) the current slot could also get marked as corrupt. To reset that counter you'll need to reflash the `boot` partition - to see what is going on, try `fastboot getvar all` and look out for something like a `unbootable` flag.
 
+#### (Step 9) When you get `Operation not permitted` during flashing
+This is commonly caused by relocking and then reunlocking the bootloader (yay - buggy firmware). You'll need to relock, restore (and boot) the device with [Flashtool](http://flashtool.net/) using Sonys original ROM and start from fresh.
+
 #### (Step 10) When you get the `kDownloadPayloadPubKeyVerificationError` error
 Well, that's caused by using an other recovery than the provided one, as I use my own private keys to sign the build the recovery must also know them. Using an other recovery than the one from
 the `img` folder of the complete package will most likely not include them (and when they do - I am in big trouble), and therefore fail. But you are in luck: It seems that the recovery writes
