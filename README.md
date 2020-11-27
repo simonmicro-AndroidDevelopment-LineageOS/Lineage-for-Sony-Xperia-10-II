@@ -13,7 +13,7 @@ _Please note this is currently for the dual-sim model ONLY. When you need a sing
 ```
 
 ## Features
-* OTA updates
+* OTA updates, always delayed for 5 days (to prevent broken rollouts); when you want it immediately, checkout my GitLab pipelines
 * Increased volume steps to 25
 * Over-provisioned system image (580MiB), to allow install of OpenGApps and other stuff
 * Open Source (it is based on SODP, you can view all my patches and ci scripts [here](https://gitlab.simonmicro.de/android/lineage/lineage-pdx201) or [here](https://github.com/Simonmicro/Lineage-for-Sony-Xperia-10-II))
@@ -32,6 +32,12 @@ There you have multiple options:
 
 ## Changelog
 ```
+2020-11-27
+Fixed ADB security.
+
+2020-11-25
+Added SELinux support.
+
 2020-11-20
 Added OpenGApps support.
 
@@ -70,7 +76,6 @@ yours. When you plan to flash the images manually, make sure to include `boot`, 
 adb sideload [OTA_SYSTEM_UPDATE_ZIP_FILENAME]
 ```
 11. After installing the OTA, make sure to reboot your device to verify the update is indeed working. Also the update switches the slots, but the recovery needs to reboot to realize that - otherwise sideloading other stuff may won't work!
-12. You may now relock your bootloader to suppress the bold warning during starting your device. For that take a look at @Sjll guide [here](https://forum.xda-developers.com/sony-xperia-10-ii/how-to/guidance-relock-bootloader-xperia-10-ii-t4190095)
 
 ### Something went wrong - help!
 
@@ -79,6 +84,9 @@ adb sideload [OTA_SYSTEM_UPDATE_ZIP_FILENAME]
 * You messed up the verity disable step from before - try again.
 * Try to switch the current boot slot (get current `fastboot getvar current-slot` and set new `fastboot --set-active=`, you can choose between `a` and `b`) and retry disableing verity disable again!
 * When your device fails to boot too many times (and crashes) the current slot could also get marked as corrupt. To reset that counter you'll need to reflash the `boot` partition - to see what is going on, try `fastboot getvar all` and look out for something like a `unbootable` flag.
+
+#### (Step 9) When you get `Operation not permitted` during flashing
+This is commonly caused by relocking and then reunlocking the bootloader (yay - buggy firmware). You'll need to relock, restore (and boot) the device with [Flashtool](http://flashtool.net/) using Sonys original ROM and start from fresh.
 
 #### (Step 10) When you get the `kDownloadPayloadPubKeyVerificationError` error
 Well, that's caused by using an other recovery than the provided one, as I use my own private keys to sign the build the recovery must also know them. Using an other recovery than the one from

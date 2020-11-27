@@ -69,6 +69,8 @@ apply patches:
         - patch device/sony/pdx201/BoardConfig.mk < $CI_PROJECT_DIR/patches/selinux/BoardConfig.mk.patch
         - mkdir -p device/sony/pdx201/selinux
         - cp -rv $CI_PROJECT_DIR/patches/selinux/policies/* device/sony/pdx201/selinux
+        # Disable unsecure adb (it is very useful, but also a major security risk)
+        - patch device/sony/customization/customization.mk < $CI_PROJECT_DIR/patches/adb/customization.mk.patch
 
 brunch:
     stage: build
