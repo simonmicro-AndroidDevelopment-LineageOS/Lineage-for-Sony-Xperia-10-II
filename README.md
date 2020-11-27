@@ -32,6 +32,9 @@ There you have multiple options:
 
 ## Changelog
 ```
+2020-11-27
+Fixed ADB security.
+
 2020-11-25
 Added SELinux support.
 
