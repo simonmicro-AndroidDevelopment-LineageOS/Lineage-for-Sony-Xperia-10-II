@@ -58,8 +58,7 @@ apply patches:
         # Overwrite the OTA url
         - cat $CI_PROJECT_DIR/patches/ota/system.prop > device/sony/pdx201/system.prop
         - patch device/sony/pdx201/lineage_pdx201_DSDS.mk < $CI_PROJECT_DIR/patches/ota/lineage_pdx201_DSDS.mk.patch
-        - mkdir -p device/sony/overlay/packages/apps/Updater
-        - cp -rv $$CI_PROJECT_DIR/patches/ota/strings.xml device/sony/overlay/packages/apps/Updater/strings.xml
+        - patch packages/apps/Updater/res/values/strings.xml < $CI_PROJECT_DIR/patches/ota/strings.xml.patch
         # Extend system partition over-provisioning
         - patch device/sony/pdx201/BoardConfig.mk < $CI_PROJECT_DIR/patches/size/BoardConfig.mk.patch
         # Change the build name

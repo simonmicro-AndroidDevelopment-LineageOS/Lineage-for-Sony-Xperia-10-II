@@ -1,4 +1,0 @@
-<resources>
-    <!-- We are overlaying this config, as the updater does not supports overwriting the changelog use by system props (yet?) -->
-    <string name="menu_changelog_url" translatable="false">https://gitlab.simonmicro.de/android/lineage/lineage-pdx201/-/commits/master/</string>
-</resources>
