@@ -17,10 +17,12 @@ _Please note this is currently for the dual-sim model ONLY. When you need a sing
 * Increased volume steps to 25
 * Over-provisioned system image (580MiB), to allow install of OpenGApps and other stuff
 * Open Source (it is based on SODP, you can view all my patches and ci scripts [here](https://gitlab.simonmicro.de/android/lineage/lineage-pdx201) or [here](https://github.com/Simonmicro/Lineage-for-Sony-Xperia-10-II))
+* Package signature spoofing (needed by MicroG)
 
 ## What does not work?
 * Using wide and zoom back-facing cameras - is currently WIP ([see here](https://github.com/sonyxperiadev/device-sony-pdx201/pull/15))
-* Notification LED
+* Notification LED blinking - kernel driver bug ([see here](https://github.com/sonyxperiadev/bug_tracker/issues/577))
+* WiFi Hotspot (native lib crashes, still investigating)
 * _You tell me..._
 
 ## Download

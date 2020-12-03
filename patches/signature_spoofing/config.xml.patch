@@ -1,0 +1,11 @@
+--- /run/user/1000/gvfs/sftp:host=simon-server.local/mnt/dying_ancients/android/ci/next/frameworks/base/core/res/res/values/config.xml	2020-11-27 03:24:50.000000000 +0100
++++ /home/simon/Desktop/config.xml	2020-12-03 02:16:10.044146737 +0100
+@@ -1875,6 +1875,8 @@
+     <string-array name="config_locationProviderPackageNames" translatable="false">
+         <!-- The standard AOSP fused location provider -->
+         <item>com.android.location.fused</item>
++        <!-- The (faked) microg fused location provider (a free reimplementation) -->
++        <item>com.google.android.gms</item>
+     </string-array>
+ 
+     <!-- This string array can be overriden to enable test location providers initially. -->
