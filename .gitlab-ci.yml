@@ -75,7 +75,11 @@ apply patches:
         # This patch also may disables the blinking support, as the kernel driver is currently broken and renders blinking led
         # colors useless as they always end up white or rainbow... -> https://github.com/sonyxperiadev/bug_tracker/issues/577
         - patch lineage-sdk/lineage/res/res/values/config.xml < $CI_PROJECT_DIR/patches/leds/config.xml.patch
-
+        # Readd the package signature spoofing permission
+        - patch frameworks/base/core/res/AndroidManifest.xml < $CI_PROJECT_DIR/patches/signature_spoofing/AndroidManifest.xml.patch
+        - patch frameworks/base/core/res/res/values/config.xml < $CI_PROJECT_DIR/patches/signature_spoofing/config.xml.patch
+        - patch frameworks/base/services/core/java/com/android/server/pm/PackageManagerService.java < $CI_PROJECT_DIR/patches/signature_spoofing/PackageManagerService.java.patch
+        - patch frameworks/base/core/res/res/values/strings.xml < $CI_PROJECT_DIR/patches/signature_spoofing/strings.xml.patch
 brunch:
     stage: build
     before_script:
