@@ -20,7 +20,8 @@ _Please note this is currently for the dual-sim model ONLY. When you need a sing
 
 ## What does not work?
 * Using wide and zoom back-facing cameras - is currently WIP ([see here](https://github.com/sonyxperiadev/device-sony-pdx201/pull/15))
-* Notification LED
+* Notification LED blinking - kernel driver bug ([see here](https://github.com/sonyxperiadev/bug_tracker/issues/577))
+* WiFi Hotspot (native lib crashes, still investigating)
 * _You tell me..._
 
 ## Download
