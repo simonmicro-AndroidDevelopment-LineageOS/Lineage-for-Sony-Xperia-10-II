@@ -53,14 +53,16 @@ apply patches:
         # Fix compile errors
         - patch vendor/lineage/config/BoardConfigQcom.mk < $CI_PROJECT_DIR/patches/compiler/BoardConfigQcom.mk.patch
         - patch vendor/lineage/build/core/vendor/qcom_boards.mk < $CI_PROJECT_DIR/patches/compiler/qcom_boards.mk.patch
-        # Disable verity support, as it sometimes break devices -> https://github.com/MarijnS95/device-sony-seine/commit/dd9415369264c33fb498cf4c04887f5a88ee2b4d
+        # Disable verity support
         - patch device/sony/seine/PlatformConfig.mk < $CI_PROJECT_DIR/patches/verity/PlatformConfig.mk.patch
         # Overwrite the OTA url
         - cat $CI_PROJECT_DIR/patches/ota/system.prop > device/sony/pdx201/system.prop
         - patch device/sony/pdx201/lineage_pdx201_DSDS.mk < $CI_PROJECT_DIR/patches/ota/lineage_pdx201_DSDS.mk.patch
+        - mkdir -p device/sony/overlay/packages/apps/Updater
+        - cp -rv $$CI_PROJECT_DIR/patches/ota/strings.xml device/sony/overlay/packages/apps/Updater/strings.xml
         # Extend system partition over-provisioning
         - patch device/sony/pdx201/BoardConfig.mk < $CI_PROJECT_DIR/patches/size/BoardConfig.mk.patch
-        # Change the build name from AOSP to Lineage
+        # Change the build name
         - patch device/sony/pdx201/aosp_xqau51.mk < $CI_PROJECT_DIR/patches/name/aosp_xqau51.mk.patch
         - patch device/sony/pdx201/aosp_xqau52.mk < $CI_PROJECT_DIR/patches/name/aosp_xqau52.mk.patch
         # Add more volume steps
@@ -69,11 +71,9 @@ apply patches:
         - patch device/sony/pdx201/BoardConfig.mk < $CI_PROJECT_DIR/patches/selinux/BoardConfig.mk.patch
         - mkdir -p device/sony/pdx201/selinux
         - cp -rv $CI_PROJECT_DIR/patches/selinux/policies/* device/sony/pdx201/selinux
-        # Disable unsecure adb (it is very useful, but also a major security risk)
+        # Disable unsecure adb
         - patch device/sony/customization/customization.mk < $CI_PROJECT_DIR/patches/adb/customization.mk.patch
-        # Enable notification LED color support (need to patch it directly as the rro overlay is currently broken on LOS 17.1)
-        # This patch also may disables the blinking support, as the kernel driver is currently broken and renders blinking led
-        # colors useless as they always end up white or rainbow... -> https://github.com/sonyxperiadev/bug_tracker/issues/577
+        # Enable notification LED
         - patch lineage-sdk/lineage/res/res/values/config.xml < $CI_PROJECT_DIR/patches/leds/config.xml.patch
         # Readd the package signature spoofing permission
         - patch frameworks/base/core/res/AndroidManifest.xml < $CI_PROJECT_DIR/patches/signature_spoofing/AndroidManifest.xml.patch
