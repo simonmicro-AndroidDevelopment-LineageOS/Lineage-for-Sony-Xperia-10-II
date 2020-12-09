@@ -160,4 +160,4 @@ rsync:
         - master
     # Just in case the build is broken - delay the rollout, so I could cancel it
     when: delayed
-    start_in: 5 days
+    start_in: 1 day
