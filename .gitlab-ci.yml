@@ -6,6 +6,7 @@ stages:
     - build
     - sign
     - verify
+    - janitor
     - deploy
 
 image: $CI_REGISTRY_IMAGE:$CI_COMMIT_BRANCH
@@ -42,8 +43,6 @@ repo sync:
         - repo forall -vc 'git reset --hard; git clean -fdx' 
         # Fetch + safe apply new data
         - repo sync -v -j$(nproc) --force-sync -d
-        # Drop any data still dangling in some repos
-        - repo forall -vc "git fsck"
         
 apply patches:
     stage: patch
@@ -144,6 +143,13 @@ verity check:
             - ./img
             - ./ota
             - ./build.prop
+
+git fsck:
+    stage: janitor
+    script:
+        - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
+        # Drop any data still dangling in some repos
+        - repo forall -vc "git fsck"
             
 rsync:
     stage: deploy
