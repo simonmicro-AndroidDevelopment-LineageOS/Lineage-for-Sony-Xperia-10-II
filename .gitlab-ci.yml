@@ -39,7 +39,7 @@ repo sync:
     script:
         - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
         # Fetch + safe apply new data
-        - repo sync -v -j$(nproc) --force-sync
+        - repo sync -v -j$(nproc) --force-sync -d
         
 apply patches:
     stage: patch
