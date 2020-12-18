@@ -148,8 +148,17 @@ git fsck:
     stage: janitor
     script:
         - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
-        # Drop any data still dangling in some repos
+        # Make sure the repos are intact
         - repo forall -vc "git fsck"
+        
+git gc:
+    stage: janitor
+    script:
+        - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
+        # Mark all unreachable commits...
+        - repo forall -vc "git reflog expire --expire-unreachable=now --all"
+        # ...and any data still dangling in some repos
+        - repo forall -vc "git gc --prune=now"
             
 rsync:
     stage: deploy
