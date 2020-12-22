@@ -77,6 +77,7 @@ apply patches:
         - patch lineage-sdk/lineage/res/res/values/config.xml < $CI_PROJECT_DIR/patches/leds/config.xml.patch
         # Switch to the LOS Snap camera
         - patch device/sony/pdx201/device.mk < $CI_PROJECT_DIR/patches/camera/device.mk.patch
+        - patch build/make/target/product/handheld_product.mk < $CI_PROJECT_DIR/patches/camera/handheld_product.mk.diff
         # Readd the package signature spoofing permission
         - patch frameworks/base/core/res/AndroidManifest.xml < $CI_PROJECT_DIR/patches/signature_spoofing/AndroidManifest.xml.patch
         - patch frameworks/base/core/res/res/values/config.xml < $CI_PROJECT_DIR/patches/signature_spoofing/config.xml.patch
@@ -162,6 +163,8 @@ git gc:
         # ...and any data still dangling in some repos
         - repo forall -vc "git gc --prune=now"
             
+# TODO REMOVE PRIVATE_KEYS FROM BUILD DIR AS AN OTHER JANITOR JOB
+
 rsync:
     stage: deploy
     image: realsimonmicro/alpine-deploy

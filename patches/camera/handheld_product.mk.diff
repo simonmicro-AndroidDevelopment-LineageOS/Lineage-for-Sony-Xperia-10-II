@@ -1,0 +1,10 @@
+--- /run/user/1000/gvfs/sftp:host=simon-server.local/mnt/dying_ancients/android/ci/next/build/make/target/product/handheld_product.mk	2020-12-16 00:44:55.000000000 +0100
++++ /home/simon/Desktop/handheld_product.mk	2020-12-22 21:44:51.642350082 +0100
+@@ -24,7 +24,6 @@
+ PRODUCT_PACKAGES += \
+     Browser2 \
+     Calendar \
+-    Camera2 \
+     Contacts \
+     DeskClock \
+     Gallery2 \

@@ -4,10 +4,10 @@
  PRODUCT_PROPERTY_OVERRIDES := \
      ro.sf.lcd_density=420 \
      ro.usb.pid_suffix=20c
-+    
-+# Use the LOG Snap camera instead of stock
-+PRODUCT_PACKAGES -= Camera2
-+PRODUCT_PACKAGES += Snap
++
++# Use the LOS Snap camera (instead of stock)
++PRODUCT_PACKAGES += \
++    Snap
  
  # Inherit from those products. Most specific first.
  $(call inherit-product, device/sony/seine/platform.mk)
