@@ -1,0 +1,13 @@
+--- /run/user/1000/gvfs/sftp:host=simon-server.local/mnt/dying_ancients/android/ci/next/device/sony/pdx201/device.mk	2020-12-16 00:45:36.000000000 +0100
++++ /home/simon/Desktop/device.mk	2020-12-22 14:02:08.790409551 +0100
+@@ -132,6 +132,10 @@
+ PRODUCT_PROPERTY_OVERRIDES := \
+     ro.sf.lcd_density=420 \
+     ro.usb.pid_suffix=20c
++    
++# Use the LOG Snap camera instead of stock
++PRODUCT_PACKAGES -= Camera2
++PRODUCT_PACKAGES += Snap
+ 
+ # Inherit from those products. Most specific first.
+ $(call inherit-product, device/sony/seine/platform.mk)
