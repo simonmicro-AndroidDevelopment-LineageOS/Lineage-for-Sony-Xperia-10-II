@@ -162,8 +162,12 @@ git gc:
         - repo forall -vc "git reflog expire --expire-unreachable=now --all"
         # ...and any data still dangling in some repos
         - repo forall -vc "git gc --prune=now"
-            
-# TODO REMOVE PRIVATE_KEYS FROM BUILD DIR AS AN OTHER JANITOR JOB
+
+remove keys:
+    stage: janitor
+    script:
+        - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
+        - rm -rfv ./PRIVATE_KEYS
 
 rsync:
     stage: deploy
