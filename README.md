@@ -22,7 +22,7 @@ _Please note this is currently for the dual-sim model ONLY. When you need a sing
 ## What does not work?
 * Stock camera app with wide and zoom cameras, you may use [Open Camera](https://f-droid.org/en/packages/net.sourceforge.opencamera/) to circumvent that.
 * Notification LED blinking - kernel driver bug ([see here](https://github.com/sonyxperiadev/bug_tracker/issues/577))
-* WiFi Hotspot (native lib crashes, still investigating)
+* LiveDisplay
 * _You tell me..._
 
 ## Download
