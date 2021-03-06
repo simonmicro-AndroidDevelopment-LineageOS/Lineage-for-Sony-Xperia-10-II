@@ -34,6 +34,9 @@ There you have multiple options:
 
 ## Changelog
 ```
+2021-02-28
+Fixed wifi hotspot.
+
 2020-12-18
 Fixed cameras.
 
