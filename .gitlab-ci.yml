@@ -152,6 +152,7 @@ git fsck:
         - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
         # Make sure the repos are intact
         - repo forall -vc "git fsck"
+    allow_failure: true
         
 git gc:
     stage: janitor
@@ -161,6 +162,7 @@ git gc:
         - repo forall -vc "git reflog expire --expire-unreachable=now --all"
         # ...and any data still dangling in some repos
         - repo forall -vc "git gc --prune=now"
+    allow_failure: true
 
 remove keys:
     stage: janitor
