@@ -1,6 +1,5 @@
 stages:
     - prepare
-    - init
     - sync
     - build
     - sign
@@ -22,7 +21,7 @@ build docker:
     when: manual
         
 repo init:
-    stage: init
+    stage: prepare
     script:
         - mkdir -p $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
         - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
@@ -36,6 +35,8 @@ repo init:
         
 repo sync:
     stage: sync
+    needs:
+        - repo init
     script:
         - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
         # Revert any custom patches
@@ -44,9 +45,18 @@ repo sync:
         - repo sync -v -j$(nproc) --force-sync -d
         # Apply the custom fixes
         - ./repo_update.sh
+
+clean by prepare:
+    # Start from scratch if prepare fails
+    stage: sync
+    script:
+        - rm -rf $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
+    when: on_failure
         
 brunch:
     stage: build
+    needs:
+        - repo sync
     before_script:
         - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
         # Cleanup
@@ -58,8 +68,17 @@ brunch:
         - breakfast lineage_pdx201_DSDS-userdebug
         - mka target-files-package
 
+clean by sync:
+    # Start from scratch if sync fails
+    stage: build
+    script:
+        - rm -rf $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
+    when: on_failure
+
 sign:
     stage: sign
+    needs:
+        - brunch
     before_script:
         - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
         # Download and extract the private keys (should create a dir called PRIVATE_KEYS)
@@ -80,8 +99,17 @@ sign:
         - md5sum out/target/product/pdx201/$RESULT_NAME-ota_update.zip > out/target/product/pdx201/$RESULT_NAME-ota_update.zip.md5sum
         - md5sum out/target/product/pdx201/$RESULT_NAME.zip > out/target/product/pdx201/$RESULT_NAME.zip.md5sum
 
+clean by build:
+    # Start from scratch if build fails
+    stage: sign
+    script:
+        - rm -rf $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
+    when: on_failure
+
 verity check:
     stage: verify
+    needs:
+        - sign
     before_script:
         - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
     script:
@@ -109,18 +137,27 @@ verity check:
             - ./ota
             - ./build.prop
 
+clean by sign:
+    # Start from scratch if sign fails
+    stage: verify
+    script:
+        - rm -rf $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
+    when: on_failure
+
 remove keys:
     stage: janitor
+    needs:
+        - verity check
     script:
         - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
         - rm -rfv ./PRIVATE_KEYS
     when: always
 
-start from scratch:
+clean by verify:
+    # Start from scratch if verify fails
     stage: janitor
     script:
-        - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
-        - rm -rfv ./PRIVATE_KEYS
+        - rm -rf $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
     when: on_failure
 
 rsync:
