@@ -1,2 +1,0 @@
-#============= priv_app ==============
-allow priv_app sysfs_msm_subsys:file { getattr open read };
