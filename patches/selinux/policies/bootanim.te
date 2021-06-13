@@ -1,3 +1,0 @@
-#============= bootanim ==============
-allow bootanim sysfs_msm_subsys:dir search;
-allow bootanim sysfs_msm_subsys:file { getattr open read };

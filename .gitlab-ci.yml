@@ -1,8 +1,6 @@
 stages:
     - prepare
-    - init
     - sync
-    - patch
     - build
     - sign
     - verify
@@ -23,67 +21,42 @@ build docker:
     when: manual
         
 repo init:
-    stage: init
+    stage: prepare
     script:
         - mkdir -p $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
         - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
         - repo init -u git://github.com/LineageOS/android.git -b lineage-17.1
         - cd .repo
         - rm -rf local_manifests
-        - git clone https://github.com/MartinX3-AndroidDevelopment-LineageOS/local_manifests.git
+        - git clone https://github.com/Simonmicro-AndroidDevelopment-LineageOS/local_manifests.git
         - cd local_manifests
-        - git checkout MartinX3/lineage-17.1
+        - git checkout Simonmicro/lineage-17.1
         - cd ../..
         
 repo sync:
     stage: sync
+    needs:
+        - repo init
     script:
         - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
         # Revert any custom patches
         - repo forall -vc 'git reset --hard; git clean -fdx' 
         # Fetch + safe apply new data
         - repo sync -v -j$(nproc) --force-sync -d
-        
-apply patches:
-    stage: patch
-    script:
-        - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
         # Apply the custom fixes
         - ./repo_update.sh
-        - echo "Applying own patches..."
-        # Fix compile errors
-        - patch vendor/lineage/config/BoardConfigQcom.mk < $CI_PROJECT_DIR/patches/compiler/BoardConfigQcom.mk.patch
-        - patch vendor/lineage/build/core/vendor/qcom_boards.mk < $CI_PROJECT_DIR/patches/compiler/qcom_boards.mk.patch
-        # Disable verity support
-        - patch device/sony/seine/PlatformConfig.mk < $CI_PROJECT_DIR/patches/verity/PlatformConfig.mk.patch
-        # Overwrite the OTA url
-        - cat $CI_PROJECT_DIR/patches/ota/system.prop > device/sony/pdx201/system.prop
-        - patch device/sony/pdx201/lineage_pdx201_DSDS.mk < $CI_PROJECT_DIR/patches/ota/lineage_pdx201_DSDS.mk.patch
-        - patch packages/apps/Updater/res/values/strings.xml < $CI_PROJECT_DIR/patches/ota/strings.xml.patch
-        # Extend system partition over-provisioning
-        - patch device/sony/pdx201/BoardConfig.mk < $CI_PROJECT_DIR/patches/size/BoardConfig.mk.patch
-        # Change the build name
-        - patch device/sony/pdx201/aosp_xqau51.mk < $CI_PROJECT_DIR/patches/name/aosp_xqau51.mk.patch
-        - patch device/sony/pdx201/aosp_xqau52.mk < $CI_PROJECT_DIR/patches/name/aosp_xqau52.mk.patch
-        # Add more volume steps
-        - cat $CI_PROJECT_DIR/patches/volume/system.prop >> device/sony/pdx201/system.prop
-        # Enforce SELinux and install needed policies
-        - patch device/sony/pdx201/BoardConfig.mk < $CI_PROJECT_DIR/patches/selinux/BoardConfig.mk.patch
-        - mkdir -p device/sony/pdx201/selinux
-        - cp -rv $CI_PROJECT_DIR/patches/selinux/policies/* device/sony/pdx201/selinux
-        # Disable unsecure adb
-        - patch device/sony/customization/customization.mk < $CI_PROJECT_DIR/patches/adb/customization.mk.patch
-        # Enable notification LED
-        - patch lineage-sdk/lineage/res/res/values/config.xml < $CI_PROJECT_DIR/patches/leds/config.xml.patch
-        # Switch to the LOS Snap camera
-        - patch device/sony/pdx201/device.mk < $CI_PROJECT_DIR/patches/camera/device.mk.patch
-        # Readd the package signature spoofing permission
-        - patch frameworks/base/core/res/AndroidManifest.xml < $CI_PROJECT_DIR/patches/signature_spoofing/AndroidManifest.xml.patch
-        - patch frameworks/base/core/res/res/values/config.xml < $CI_PROJECT_DIR/patches/signature_spoofing/config.xml.patch
-        - patch frameworks/base/services/core/java/com/android/server/pm/PackageManagerService.java < $CI_PROJECT_DIR/patches/signature_spoofing/PackageManagerService.java.patch
-        - patch frameworks/base/core/res/res/values/strings.xml < $CI_PROJECT_DIR/patches/signature_spoofing/strings.xml.patch
+
+clean by prepare:
+    # Start from scratch if prepare fails
+    stage: sync
+    script:
+        - rm -rf $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
+    when: on_failure
+        
 brunch:
     stage: build
+    needs:
+        - repo sync
     before_script:
         - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
         # Cleanup
@@ -95,8 +68,17 @@ brunch:
         - breakfast lineage_pdx201_DSDS-userdebug
         - mka target-files-package
 
+clean by sync:
+    # Start from scratch if sync fails
+    stage: build
+    script:
+        - rm -rf $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
+    when: on_failure
+
 sign:
     stage: sign
+    needs:
+        - brunch
     before_script:
         - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
         # Download and extract the private keys (should create a dir called PRIVATE_KEYS)
@@ -117,8 +99,17 @@ sign:
         - md5sum out/target/product/pdx201/$RESULT_NAME-ota_update.zip > out/target/product/pdx201/$RESULT_NAME-ota_update.zip.md5sum
         - md5sum out/target/product/pdx201/$RESULT_NAME.zip > out/target/product/pdx201/$RESULT_NAME.zip.md5sum
 
+clean by build:
+    # Start from scratch if build fails
+    stage: sign
+    script:
+        - rm -rf $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
+    when: on_failure
+
 verity check:
     stage: verify
+    needs:
+        - sign
     before_script:
         - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
     script:
@@ -146,29 +137,28 @@ verity check:
             - ./ota
             - ./build.prop
 
-git fsck:
-    stage: janitor
+clean by sign:
+    # Start from scratch if sign fails
+    stage: verify
     script:
-        - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
-        # Make sure the repos are intact
-        - repo forall -vc "git fsck"
-    allow_failure: true
-        
-git gc:
-    stage: janitor
-    script:
-        - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
-        # Mark all unreachable commits...
-        - repo forall -vc "git reflog expire --expire-unreachable=now --all"
-        # ...and any data still dangling in some repos
-        - repo forall -vc "git gc --prune=now"
-    allow_failure: true
+        - rm -rf $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
+    when: on_failure
 
 remove keys:
     stage: janitor
+    needs:
+        - verity check
     script:
         - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
         - rm -rfv ./PRIVATE_KEYS
+    when: always
+
+clean by verify:
+    # Start from scratch if verify fails
+    stage: janitor
+    script:
+        - rm -rf $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
+    when: on_failure
 
 rsync:
     stage: deploy

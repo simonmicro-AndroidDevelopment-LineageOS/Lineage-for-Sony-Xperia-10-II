@@ -1,3 +1,0 @@
-# Overwrite the OTA updates from the official servers
-lineage.updater.uri=https://ota.simonmicro.de/api/v1/{device}/{type}/{incr}
-lineage.updater.allow_downgrading=false

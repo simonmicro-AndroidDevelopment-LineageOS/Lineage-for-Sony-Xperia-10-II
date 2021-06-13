@@ -1,2 +1,0 @@
-# System server needs to access a display port -> added to genfs context!
-genfscon sysfs /devices/platform/soc/soc:qcom,msm-ext-disp               u:object_r:sysfs_msm_subsys:s0

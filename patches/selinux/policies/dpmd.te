@@ -1,2 +1,0 @@
-#============= dpmd ==============
-allow dpmd self:capability setuid;
