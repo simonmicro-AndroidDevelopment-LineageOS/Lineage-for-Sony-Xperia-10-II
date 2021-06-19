@@ -40,7 +40,7 @@ repo sync:
     script:
         - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
         # Revert any custom patches
-        - repo forall -vc 'git reset --hard; git clean -fdx' 
+        - repo forall -vc 'pwd; git reset --hard; git clean -fdx' 
         # Fetch + safe apply new data
         - repo sync -v -j$(nproc) --force-sync -d
         # Apply the custom fixes
