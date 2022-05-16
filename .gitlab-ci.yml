@@ -25,7 +25,7 @@ repo init:
     script:
         - mkdir -p $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
         - cd $PERSISTENT_DATA_STORAGE/$CI_COMMIT_BRANCH
-        - repo init -u git://github.com/LineageOS/android.git -b lineage-17.1
+        - repo init -u https://github.com/LineageOS/android.git -b lineage-17.1
         - cd .repo
         - rm -rf local_manifests
         - git clone https://github.com/Simonmicro-AndroidDevelopment-LineageOS/local_manifests.git
